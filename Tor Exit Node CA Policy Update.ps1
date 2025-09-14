@@ -35,7 +35,7 @@ Update-MgIdentityConditionalAccessNamedLocation -NamedLocationId $Policy.Id  -Bo
 }
 else 
 {
-New-MgIdentityConditionalAccessNamedLocation -DisplayName $PolicyName -BodyParameter $params
+New-MgIdentityConditionalAccessNamedLocation -BodyParameter $params
 }
 }
 
@@ -74,6 +74,6 @@ Update-MgIdentityConditionalAccessNamedLocation -NamedLocationId $Policy.Id  -Bo
 }
 else 
 {
-New-MgIdentityConditionalAccessNamedLocation -DisplayName $PolicyName -BodyParameter $params
+New-MgIdentityConditionalAccessNamedLocation -BodyParameter $params
 }
 }
