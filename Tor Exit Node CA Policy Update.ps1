@@ -1,5 +1,5 @@
 #Requires -Module @{ModuleName='Microsoft.Graph.Identity.SignIns'; RequiredVersion='2.25.0'},@{ModuleName='Microsoft.Graph.Authentication'; RequiredVersion='2.25.0'}
-Connect-MgGraph -Scopes "Policy.ReadWrite.ConditionalAccess" -NoWelcome -Identity
+Connect-MgGraph -NoWelcome -Identity
 
 $url = "https://check.torproject.org/torbulkexitlist"
 $response = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
