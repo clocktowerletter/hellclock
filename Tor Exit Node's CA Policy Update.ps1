@@ -1,5 +1,5 @@
 #Requires -Module @{ModuleName='Microsoft.Graph.Identity.SignIns'; RequiredVersion='2.25.0'},@{ModuleName='Microsoft.Graph.Authentication'; RequiredVersion='2.25.0'}
-
+Connect-MgGraph -NoWelcome -Identity
 Start-Job -ScriptBlock -Name "IPv4 IP Range Update" {
 
 $url = "https://check.torproject.org/torbulkexitlist"
@@ -11,7 +11,7 @@ $CleanedIPs=$IPs -match $regex
 
 $IPlist=$CleanedIPs | Group-Object | ForEach-Object { $_.Group[0] }
 #Enter Policy Name - If it doesn't exist, it will create it.    
-$PolicyName=""
+$PolicyName="Block Tor IPv4"
 $Policy=Get-MgIdentityConditionalAccessNamedLocation -Filter "DisplayName eq '$($PolicyName)'"
 if !($Policy)
 {
@@ -50,7 +50,7 @@ $CleanedIP6s=$IP6s -match $regex
 
 $IP6list=$CleanedIP6s | Group-Object | ForEach-Object { $_.Group[0] }
 
-$PolicyName=""
+$PolicyName="Block Tor IPv6"
 $Policy=Get-MgIdentityConditionalAccessNamedLocation -Filter "DisplayName eq '$($PolicyName)'"
 $params = @{
 	"@odata.type" = "#microsoft.graph.ipNamedLocation"
