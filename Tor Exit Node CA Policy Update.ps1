@@ -1,6 +1,5 @@
 #Requires -Module @{ModuleName='Microsoft.Graph.Identity.SignIns'; RequiredVersion='2.25.0'},@{ModuleName='Microsoft.Graph.Authentication'; RequiredVersion='2.25.0'}
 Connect-MgGraph -Scopes "Policy.ReadWrite.ConditionalAccess" -NoWelcome -Identity
-Start-Job -Name "IPv4 IP Range Update" -ScriptBlock {
 
 $url = "https://check.torproject.org/torbulkexitlist"
 $response = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
@@ -37,9 +36,12 @@ else
 {
 New-MgIdentityConditionalAccessNamedLocation -BodyParameter $params
 }
-}
 
-Start-Job -Name "IPv6 IP Range Update" -ScriptBlock {
+Function Get-ScriptVariables {
+    Compare-Object (Get-Variable) $ScriptVariables -Property Name -PassThru | Where-Object -Property Name -ne "AutomaticVariables" 
+}
+$ScriptVariables = Get-Variable
+Get-ScriptVariables | Remove-Variable
 
 $url = "https://www.dan.me.uk/torlist/?exit"
 $response = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
@@ -75,5 +77,4 @@ Update-MgIdentityConditionalAccessNamedLocation -NamedLocationId $Policy.Id  -Bo
 else 
 {
 New-MgIdentityConditionalAccessNamedLocation -BodyParameter $params
-}
 }
