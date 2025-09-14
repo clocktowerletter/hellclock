@@ -1,6 +1,6 @@
 #Requires -Module @{ModuleName='Microsoft.Graph.Identity.SignIns'; RequiredVersion='2.25.0'},@{ModuleName='Microsoft.Graph.Authentication'; RequiredVersion='2.25.0'}
 Connect-MgGraph -NoWelcome -Identity
-Start-Job -ScriptBlock -Name "IPv4 IP Range Update" {
+Start-Job -Name "IPv4 IP Range Update" -ScriptBlock {
 
 $url = "https://check.torproject.org/torbulkexitlist"
 $response = Invoke-WebRequest -Uri $url -UseBasicParsing
@@ -13,8 +13,7 @@ $IPlist=$CleanedIPs | Group-Object | ForEach-Object { $_.Group[0] }
 #Enter Policy Name - If it doesn't exist, it will create it.    
 $PolicyName="Block Tor IPv4"
 $Policy=Get-MgIdentityConditionalAccessNamedLocation -Filter "DisplayName eq '$($PolicyName)'"
-if !($Policy)
-{
+
 $params = @{
 	"@odata.type" = "#microsoft.graph.ipNamedLocation"
 	DisplayName = "$PolicyName"
@@ -29,15 +28,18 @@ $IpRanges.add("@odata.type", "#microsoft.graph.iPv4CidrRange")
 $IpRanges.add("CidrAddress", $IP)
 $params.IpRanges += $IpRanges
 }
-New-MgIdentityConditionalAccessNamedLocation -DisplayName $PolicyName -BodyParameter $params
-}
-else 
+
+if ($Policy)
 {
 Update-MgIdentityConditionalAccessNamedLocation -NamedLocationId $Policy.Id  -BodyParameter $params
 }
+else 
+{
+New-MgIdentityConditionalAccessNamedLocation -DisplayName $PolicyName -BodyParameter $params
+}
 }
 
-Start-Job -ScriptBlock -Name "IPv6 IP Range Update" {
+Start-Job -Name "IPv6 IP Range Update" -ScriptBlock {
 
 $url = "https://www.dan.me.uk/torlist/?exit"
 $response = Invoke-WebRequest -Uri $url -UseBasicParsing
@@ -66,12 +68,12 @@ $IpRanges.add("@odata.type", "#microsoft.graph.iPv6CidrRange")
 $IpRanges.add("CidrAddress", $IP6)
 $params.IpRanges += $IpRanges
 }
-if !($Policy)
+if ($Policy)
 {
-New-MgIdentityConditionalAccessNamedLocation -DisplayName $PolicyName -BodyParameter $params
+Update-MgIdentityConditionalAccessNamedLocation -NamedLocationId $Policy.Id  -BodyParameter $params
 }
 else 
 {
-Update-MgIdentityConditionalAccessNamedLocation -NamedLocationId $Policy.Id  -BodyParameter $params
+New-MgIdentityConditionalAccessNamedLocation -DisplayName $PolicyName -BodyParameter $params
 }
 }
