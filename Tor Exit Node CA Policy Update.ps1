@@ -1,5 +1,5 @@
 #Requires -Module @{ModuleName='Microsoft.Graph.Identity.SignIns'; RequiredVersion='2.25.0'},@{ModuleName='Microsoft.Graph.Authentication'; RequiredVersion='2.25.0'}
-Connect-MgGraph -NoWelcome -Identity
+Connect-MgGraph -Scopes "Policy.ReadWrite.ConditionalAccess" -NoWelcome -Identity
 Start-Job -Name "IPv4 IP Range Update" -ScriptBlock {
 
 $url = "https://check.torproject.org/torbulkexitlist"
