@@ -3,7 +3,7 @@ Connect-MgGraph -NoWelcome -Identity
 Start-Job -Name "IPv4 IP Range Update" -ScriptBlock {
 
 $url = "https://check.torproject.org/torbulkexitlist"
-$response = Invoke-WebRequest -Uri $url -UseBasicParsing
+$response = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
 
 $IPs=$response.RawContent -split "`n" | ForEach-Object { "$_`/32" }
 $regex="^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/32$"
@@ -42,7 +42,7 @@ New-MgIdentityConditionalAccessNamedLocation -BodyParameter $params
 Start-Job -Name "IPv6 IP Range Update" -ScriptBlock {
 
 $url = "https://www.dan.me.uk/torlist/?exit"
-$response = Invoke-WebRequest -Uri $url -UseBasicParsing
+$response = Invoke-WebRequest -Uri $url -UseBasicParsing -ErrorAction Stop
 
 $IP6s=$response.RawContent -split "`n" | ForEach-Object { "$_`/32" }
 #cleanup
